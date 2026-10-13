@@ -1,0 +1,23 @@
+{
+  "name": "quality-gate-lab",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev:api": "npm run dev -w @qgl/api",
+    "dev:web": "npm run dev -w @qgl/web",
+    "build": "npm run build -w @qgl/web && npm run build -w @qgl/api",
+    "start": "npm run start -w @qgl/api",
+    "typecheck": "npm run typecheck -w @qgl/api && npm run typecheck -w @qgl/web",
+    "test": "npm test -w @qgl/api"
+  },
+  "allowScripts": {
+    "better-sqlite3@13.0.3": true,
+    "esbuild@0.28.2": true
+  }
+}

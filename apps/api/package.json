@@ -1,0 +1,27 @@
+{
+  "name": "@qgl/api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/server.js",
+    "typecheck": "tsc --noEmit",
+    "test": "mocha"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "express": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/chai": "^5.2.3",
+    "@types/express": "^5.0.6",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^26.6.5",
+    "chai": "^6.3.0",
+    "mocha": "^12.0.3",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
