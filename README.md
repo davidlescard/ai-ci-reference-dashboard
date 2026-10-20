@@ -4,19 +4,27 @@ Release Quality Dashboard: a small React + Express + SQLite app used as a target
 
 ## Run
 
-Requires Node 22+ (24 recommended) and optionally Docker.
+Requires Node 22+ (24 recommended), pnpm (`npm i -g pnpm`; the version is pinned in `package.json`), and optionally Docker. On Windows, run the script from Git Bash or WSL.
 
-```
-./build.sh           # install, typecheck, test, build
-./build.sh start     # http://localhost:3000
-./build.sh docker    # docker compose up --build, health at /health
-```
+### View the app in a browser
 
-Individual tasks: `install`, `typecheck`, `test` (Mocha unit and API tests), `build`, `start`, `docker`.
+1. `./build.sh` to install, check, test and build (first time only).
+2. `./build.sh start` to serve the app.
+3. Open http://localhost:3000. The dashboard shows eight seeded test runs. Check http://localhost:3000/health for `{"status":"ok"}`.
 
-Development (two terminals): `npm run dev:api` and `npm run dev:web` (http://localhost:5173).
+Data is stored in `apps/api/data/app.db` and seeded automatically on first start. Delete that file to start fresh.
 
-On Windows, run the script from Git Bash or WSL.
+### With Docker
+
+`./build.sh docker`, then open http://localhost:3000. Requires Docker Desktop to be running.
+
+### Development with hot reload
+
+Run `pnpm dev:api` (http://localhost:3000) and `pnpm dev:web` in two terminals, then open http://localhost:5173. The web dev server proxies `/api` to the API.
+
+### Other tasks
+
+`./build.sh [install|compile|test|build|start|docker|all]`. The default is `all`; `test` runs the Mocha unit and API tests.
 
 ## Test support
 

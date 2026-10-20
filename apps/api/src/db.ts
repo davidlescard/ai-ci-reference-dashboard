@@ -1,6 +1,6 @@
-import Database from 'better-sqlite3';
+import { DatabaseSync } from 'node:sqlite';
 
-export type Db = Database.Database;
+export type Db = DatabaseSync;
 
 export const STATUSES = ['queued', 'running', 'passed', 'failed'] as const;
 export type Status = (typeof STATUSES)[number];
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS runs (
 export const RUN_COLUMNS = `id, name, branch, status, duration_seconds AS durationSeconds, notes, created_at AS createdAt`;
 
 export function openDb(path: string): Db {
-  const db = new Database(path);
+  const db = new DatabaseSync(path);
   db.exec(SCHEMA);
   return db;
 }

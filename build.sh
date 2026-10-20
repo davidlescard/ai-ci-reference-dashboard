@@ -4,24 +4,25 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 usage() {
-  echo "Usage: ./build.sh [install|typecheck|test|build|start|docker|all]"
-  echo "  all (default): install, typecheck, test, build"
+  echo "Usage: ./build.sh [install|compile|test|build|start|e2e|docker|all]"
+  echo "  all (default): install, compile, test, build"
 }
 
 task="${1:-all}"
 
 case "$task" in
-  install)   npm ci ;;
-  typecheck) npm run typecheck ;;
-  test)      npm test ;;
-  build)     npm run build ;;
-  start)     npm start ;;
+  install)   pnpm install --frozen-lockfile ;;
+  compile)   pnpm run compile ;;
+  test)      pnpm test ;;
+  build)     pnpm run build ;;
+  start)     pnpm start ;;
+  e2e)       pnpm run test:e2e ;;
   docker)    docker compose up --build ;;
   all)
-    npm ci
-    npm run typecheck
-    npm test
-    npm run build
+    pnpm install --frozen-lockfile
+    pnpm run compile
+    pnpm test
+    pnpm run build
     ;;
   -h|--help|help) usage ;;
   *) usage; exit 1 ;;

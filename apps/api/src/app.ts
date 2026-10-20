@@ -40,11 +40,11 @@ export function createApp(db: Db, options: AppOptions = {}) {
       params.status = status;
     }
     const sql = `SELECT ${RUN_COLUMNS} FROM runs ${where.length ? `WHERE ${where.join(' AND ')}` : ''} ORDER BY created_at DESC, id DESC`;
-    res.json(db.prepare(sql).all(params) as Run[]);
+    res.json(db.prepare(sql).all(params) as unknown as Run[]);
   });
 
   app.get('/api/runs/:id', (req, res) => {
-    const run = db.prepare(`SELECT ${RUN_COLUMNS} FROM runs WHERE id = ?`).get(Number(req.params.id)) as Run | undefined;
+    const run = db.prepare(`SELECT ${RUN_COLUMNS} FROM runs WHERE id = ?`).get(Number(req.params.id)) as unknown as Run | undefined;
     if (!run) {
       res.status(404).json({ error: 'Run not found' });
       return;
@@ -61,7 +61,7 @@ export function createApp(db: Db, options: AppOptions = {}) {
     const info = db
       .prepare(`INSERT INTO runs (name, branch, status, notes, created_at) VALUES (@name, @branch, @status, @notes, @createdAt)`)
       .run({ ...value, createdAt: new Date().toISOString() });
-    const run = db.prepare(`SELECT ${RUN_COLUMNS} FROM runs WHERE id = ?`).get(info.lastInsertRowid) as Run;
+    const run = db.prepare(`SELECT ${RUN_COLUMNS} FROM runs WHERE id = ?`).get(info.lastInsertRowid) as unknown as Run;
     res.status(201).json(run);
   });
 

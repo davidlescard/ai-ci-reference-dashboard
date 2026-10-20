@@ -1,19 +1,23 @@
 FROM node:24-slim AS build
+RUN npm install -g pnpm@12.14.0
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/api/package.json apps/api/
 COPY apps/web/package.json apps/web/
-RUN npm ci
-COPY . .
-RUN npm run build
-RUN npm prune --omit=dev
+COPY e2e/package.json e2e/
+RUN pnpm install --frozen-lockfile --filter "@qgl/*"
+COPY apps apps
+RUN pnpm run build
 
 FROM node:24-slim
+RUN npm install -g pnpm@12.14.0
 WORKDIR /app
 ENV NODE_ENV=production PORT=3000 DB_PATH=/data/app.db WEB_DIST=/app/apps/web/dist
-COPY --from=build /app/package.json ./
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/apps/api/package.json apps/api/
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/api/package.json apps/api/
+COPY apps/web/package.json apps/web/
+COPY e2e/package.json e2e/
+RUN pnpm install --frozen-lockfile --prod --filter @qgl/api
 COPY --from=build /app/apps/api/dist apps/api/dist
 COPY --from=build /app/apps/web/dist apps/web/dist
 RUN mkdir /data && chown node:node /data

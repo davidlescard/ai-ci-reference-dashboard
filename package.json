@@ -2,22 +2,17 @@
   "name": "quality-gate-lab",
   "private": true,
   "type": "module",
-  "workspaces": [
-    "apps/*"
-  ],
   "engines": {
     "node": ">=22"
   },
+  "packageManager": "pnpm@12.14.0",
   "scripts": {
-    "dev:api": "npm run dev -w @qgl/api",
-    "dev:web": "npm run dev -w @qgl/web",
-    "build": "npm run build -w @qgl/web && npm run build -w @qgl/api",
-    "start": "npm run start -w @qgl/api",
-    "typecheck": "npm run typecheck -w @qgl/api && npm run typecheck -w @qgl/web",
-    "test": "npm test -w @qgl/api"
-  },
-  "allowScripts": {
-    "better-sqlite3@13.0.3": true,
-    "esbuild@0.28.2": true
+    "dev:api": "pnpm --filter @qgl/api dev",
+    "dev:web": "pnpm --filter @qgl/web dev",
+    "build": "pnpm --filter @qgl/web build && pnpm --filter @qgl/api build",
+    "start": "pnpm --filter @qgl/api start",
+    "compile": "pnpm -r --if-present compile",
+    "test": "pnpm --filter @qgl/api test",
+    "test:e2e": "pnpm --filter ai-ci-reference-e2e test"
   }
 }

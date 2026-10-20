@@ -2,8 +2,30 @@ import { useEffect, useState } from 'react';
 import { api, STATUSES, type Run } from './api';
 import { NewRunForm } from './NewRunForm';
 
+type SortKey = 'name' | 'branch' | 'status' | 'durationSeconds';
+type SortDir = 'ascending' | 'descending';
+
+const COLUMNS: { key: SortKey; label: string }[] = [
+  { key: 'name', label: 'Name' },
+  { key: 'branch', label: 'Branch' },
+  { key: 'status', label: 'Status' },
+  { key: 'durationSeconds', label: 'Duration (s)' },
+];
+
+function sortRuns(runs: Run[], sort: { key: SortKey; dir: SortDir } | null): Run[] {
+  if (!sort) return runs;
+  const factor = sort.dir === 'ascending' ? 1 : -1;
+  return [...runs].sort((a, b) => {
+    const x = a[sort.key];
+    const y = b[sort.key];
+    const result = typeof x === 'number' && typeof y === 'number' ? x - y : String(x).localeCompare(String(y));
+    return result * factor;
+  });
+}
+
 export function RunList() {
   const [runs, setRuns] = useState<Run[]>([]);
+  const [sort, setSort] = useState<{ key: SortKey; dir: SortDir } | null>(null);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(true);
@@ -23,6 +45,10 @@ export function RunList() {
       cancelled = true;
     };
   }, [search, status, reloadKey]);
+
+  const sortedRuns = sortRuns(runs, sort);
+  const toggleSort = (key: SortKey) =>
+    setSort((current) => ({ key, dir: current?.key === key && current.dir === 'ascending' ? 'descending' : 'ascending' }));
 
   return (
     <>
@@ -57,17 +83,20 @@ export function RunList() {
         {loading && !error && <p role="status">Loading runs...</p>}
         {!loading && !error && runs.length === 0 && <p>No test runs match your filters.</p>}
         {!error && runs.length > 0 && (
-          <table>
+          <table aria-label="Test runs">
             <thead>
               <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Branch</th>
-                <th scope="col">Status</th>
-                <th scope="col">Duration (s)</th>
+                {COLUMNS.map(({ key, label }) => (
+                  <th key={key} scope="col" aria-sort={sort?.key === key ? sort.dir : undefined}>
+                    <button type="button" className="sort-button" onClick={() => toggleSort(key)}>
+                      {label}
+                    </button>
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {runs.map((run) => (
+              {sortedRuns.map((run) => (
                 <tr key={run.id}>
                   <td>
                     <a href={`#/runs/${run.id}`}>{run.name}</a>

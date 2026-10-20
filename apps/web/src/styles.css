@@ -13,3 +13,6 @@ th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid #d9e2ec; }
 .badge.queued { background: #e2e8f0; }
 .error, .field-error { color: #9b2c2c; }
 button { padding: 0.4rem 0.9rem; }
+.sort-button { padding: 0; border: 0; background: none; font: inherit; font-weight: 700; cursor: pointer; }
+th[aria-sort="ascending"] .sort-button::after { content: " \25B2"; }
+th[aria-sort="descending"] .sort-button::after { content: " \25BC"; }

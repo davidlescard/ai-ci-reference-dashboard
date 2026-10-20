@@ -26,13 +26,18 @@ export function resetAndSeed(db: Db): void {
     `INSERT INTO runs (name, branch, status, duration_seconds, notes, created_at)
      VALUES (@name, @branch, @status, @durationSeconds, @notes, @createdAt)`,
   );
-  db.transaction(() => {
+  db.exec('BEGIN');
+  try {
     db.exec(`DELETE FROM runs; DELETE FROM sqlite_sequence WHERE name = 'runs';`);
-    for (const run of SEED_RUNS) insert.run(run);
-  })();
+    for (const run of SEED_RUNS) insert.run({ ...run });
+    db.exec('COMMIT');
+  } catch (err) {
+    db.exec('ROLLBACK');
+    throw err;
+  }
 }
 
 export function seedIfEmpty(db: Db): void {
-  const { count } = db.prepare('SELECT COUNT(*) AS count FROM runs').get() as { count: number };
+  const { count } = db.prepare('SELECT COUNT(*) AS count FROM runs').get() as unknown as { count: number };
   if (count === 0) resetAndSeed(db);
 }

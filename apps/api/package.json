@@ -6,15 +6,13 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/server.js",
-    "typecheck": "tsc --noEmit",
+    "compile": "tsc --noEmit",
     "test": "mocha"
   },
   "dependencies": {
-    "better-sqlite3": "^13.0.3",
     "express": "^5.3.0"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^9.6.0",
     "@types/chai": "^5.2.3",
     "@types/express": "^5.0.6",
     "@types/mocha": "^10.0.10",
