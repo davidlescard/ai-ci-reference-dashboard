@@ -1,0 +1,82 @@
+name: PR Quality Gate
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: pr-quality-gate-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  e2e-smoke:
+    name: e2e-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      # The pnpm version comes from "packageManager" in the root package.json.
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: ./build.sh install
+      - run: ./build.sh compile
+      - run: ./build.sh test
+      - run: ./build.sh build
+
+      - name: Install Chromium
+        run: pnpm --filter ai-ci-reference-e2e exec playwright install --with-deps chromium
+
+      - name: Playwright smoke suite
+        run: pnpm --filter ai-ci-reference-e2e test:smoke
+        env:
+          CI: "true"
+
+      - name: Upload Playwright diagnostics
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-diagnostics
+          path: |
+            e2e/playwright-report/
+            e2e/test-results/
+          retention-days: 7
+
+  docker-image:
+    name: docker-image
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build image
+        run: docker build -t quality-gate-lab:ci .
+
+      - name: Start container and wait for the health check
+        run: |
+          docker run -d --name qgl -p 3000:3000 quality-gate-lab:ci
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://localhost:3000/health; then
+              curl -fsS http://localhost:3000/api/runs | grep -q "Login Flow"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Container did not become healthy" >&2
+          exit 1
+
+      - name: Container logs
+        if: ${{ !cancelled() }}
+        run: docker logs qgl
+
+      - name: Remove container
+        if: ${{ always() }}
+        run: docker rm -f qgl
