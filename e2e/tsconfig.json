@@ -8,10 +8,10 @@
     "noEmit": true,
     "types": ["node"],
     "paths": {
-        "@fixtures/*": ["./fixtures/*"],
-        "@components/*": ["./components/*"],
-        "@pages/*": ["./pages/*"],
+        "@fixtures/*": ["./src/fixtures/*"],
+        "@components/*": ["./src/components/*"],
+        "@pages/*": ["./src/pages/*"],
     }
   },
-  "include": ["components", "fixtures", "pages", "tests", "playwright.config.ts"]
+  "include": ["src", "tests", "playwright.config.ts"]
 }

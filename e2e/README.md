@@ -33,7 +33,7 @@ From `e2e/` (or use `./build.sh e2e` from the root). Commands below use `pnpm ex
 | Regression suite only | `pnpm test:regression` |
 | API tests only | `pnpm test:api` |
 
-Each Playwright worker starts its own app instance (`apps/api/dist/server.js`) on port 3100 plus the worker's index, with an in-memory database and `ENABLE_TEST_RESET=true`, and stops it when the worker finishes (see `fixtures/base.ts`). Before every test the data is reset to the seed, so tests in parallel workers cannot affect each other.
+Each Playwright worker starts its own app instance (`apps/api/dist/server.js`) on port 3100 plus the worker's index, with an in-memory database and `ENABLE_TEST_RESET=true`, and stops it when the worker finishes (see `src/fixtures/baseTest.ts`). Before every test the data is reset to the seed, so tests in parallel workers cannot affect each other.
 
 ## Reports and failures
 
@@ -70,8 +70,9 @@ e2e/
   playwright.config.ts   shared config and projects
   tests/ui/              browser tests (project: ui)
   tests/api/             HTTP tests using the request fixture (project: api)
-  pages/                 page objects
-  components/            reusable UI components (for example Grid for tables)
+  src/fixtures/          custom test fixtures (@fixtures alias)
+  src/pages/             page objects (@pages alias)
+  src/components/        reusable UI components, for example Grid for tables (@components alias)
 ```
 
 ## Conventions

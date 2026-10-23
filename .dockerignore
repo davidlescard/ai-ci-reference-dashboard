@@ -4,3 +4,6 @@ data
 .git
 test-results
 playwright-report
+jenkins
+Jenkinsfile
+.github
