@@ -24,7 +24,18 @@ Run `pnpm dev:api` (http://localhost:3000) and `pnpm dev:web` in two terminals, 
 
 ### Other tasks
 
-`./build.sh [install|compile|test|build|start|docker|all]`. The default is `all`; `test` runs the Mocha unit and API tests.
+`./build.sh [install|compile|test|test-junit|build|start|e2e|docker|all]`. The default is `all`; `test` runs the Mocha unit and API tests.
+
+## Jenkins (local)
+
+The `Jenkinsfile` runs on a local Jenkins controller that is defined as code under `jenkins/`. It is a lab setup: the container runs as root and uses the host Docker socket.
+
+1. Copy `jenkins/.env.example` to `jenkins/.env` and set `JENKINS_ADMIN_PASSWORD` and a read-only GitHub `GITHUB_TOKEN`. The file is git-ignored.
+2. `docker compose -f jenkins/docker-compose.yml up --build -d` (Docker Desktop must be running).
+3. Open http://localhost:8080 and sign in with the admin user. The `quality-gate-lab` multibranch job is created automatically and scans GitHub every 5 minutes for branches and pull requests.
+4. Each build installs, compiles, runs the Mocha tests, builds the app, builds and health-checks the container image, and runs the full Playwright suite. JUnit results are published, and the Playwright report, traces and container log are archived.
+
+Stop it with `docker compose -f jenkins/docker-compose.yml down` (add `-v` to delete the Jenkins data).
 
 ## Test support
 

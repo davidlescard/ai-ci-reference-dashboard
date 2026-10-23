@@ -4,7 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 usage() {
-  echo "Usage: ./build.sh [install|compile|test|build|start|e2e|docker|all]"
+  echo "Usage: ./build.sh [install|compile|test|test-junit|build|start|e2e|docker|all]"
   echo "  all (default): install, compile, test, build"
 }
 
@@ -14,6 +14,7 @@ case "$task" in
   install)   pnpm install --frozen-lockfile ;;
   compile)   pnpm run compile ;;
   test)      pnpm test ;;
+  test-junit) pnpm run test:junit ;;
   build)     pnpm run build ;;
   start)     pnpm start ;;
   e2e)       pnpm run test:e2e ;;

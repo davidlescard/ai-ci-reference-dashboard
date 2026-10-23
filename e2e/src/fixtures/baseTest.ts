@@ -1,10 +1,9 @@
 import { test as baseTest, expect } from '@playwright/test';
+import { findUp } from 'find-up-simple';
 import { spawn, type ChildProcess } from 'node:child_process';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { DashboardPage } from '../pages/dashboard.page';
+import { dirname } from 'node:path';
+import { DashboardPage } from '@pages/dashboard.page';
 
-const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const BASE_PORT = 3100;
 
 async function waitForHealth(url: string, server: ChildProcess, timeoutMs = 15_000): Promise<void> {
@@ -38,6 +37,9 @@ export const test = baseTest.extend<Fixtures, WorkerFixtures>({
                 await use({ url: process.env.BASE_URL });
                 return;
             }
+            const workspaceFile = await findUp('pnpm-workspace.yaml', { cwd: import.meta.dirname });
+            if (!workspaceFile) throw new Error('Could not locate the repo root (pnpm-workspace.yaml)');
+            const repoRoot = dirname(workspaceFile);
             const port = BASE_PORT + workerInfo.parallelIndex;
             const url = `http://localhost:${port}`;
             const server = spawn(process.execPath, ['apps/api/dist/server.js'], {

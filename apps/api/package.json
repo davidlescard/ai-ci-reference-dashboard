@@ -7,7 +7,8 @@
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/server.js",
     "compile": "tsc --noEmit",
-    "test": "mocha"
+    "test": "mocha",
+    "test:junit": "mocha --reporter xunit --reporter-option output=test-results/mocha.xml"
   },
   "dependencies": {
     "express": "^5.3.0"
