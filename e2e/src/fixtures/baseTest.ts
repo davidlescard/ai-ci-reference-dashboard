@@ -26,7 +26,7 @@ type Fixtures = {
 };
 
 type WorkerFixtures = {
-    workerServer: { url: string };
+    workerServer: { url: string; external: boolean };
 };
 
 export const test = baseTest.extend<Fixtures, WorkerFixtures>({
@@ -34,7 +34,7 @@ export const test = baseTest.extend<Fixtures, WorkerFixtures>({
     workerServer: [
         async ({}, use, workerInfo) => {
             if (process.env.BASE_URL) {
-                await use({ url: process.env.BASE_URL });
+                await use({ url: process.env.BASE_URL, external: true });
                 return;
             }
             const workspaceFile = await findUp('pnpm-workspace.yaml', { cwd: import.meta.dirname });
@@ -49,7 +49,7 @@ export const test = baseTest.extend<Fixtures, WorkerFixtures>({
             });
             try {
                 await waitForHealth(url, server);
-                await use({ url });
+                await use({ url, external: false });
             } finally {
                 if (server.exitCode === null) {
                     server.kill();
@@ -63,7 +63,12 @@ export const test = baseTest.extend<Fixtures, WorkerFixtures>({
         await use(workerServer.url);
     },
     resetData: [
-        async ({ request }, use) => {
+        async ({ request, workerServer }, use) => {
+            // A deployed environment is never reset.
+            if (workerServer.external) {
+                await use();
+                return;
+            }
             const response = await request.post('/api/test/reset');
             expect(response.status(), 'test reset endpoint must be enabled').toBe(204);
             await use();

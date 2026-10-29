@@ -8,7 +8,7 @@ export default defineConfig({
     reporter: [
         ['list'],
         ['html', { open: 'never' }],
-        ['junit', { outputFile: 'test-results/junit.xml' }]
+        ['junit', { outputFile: process.env.PLAYWRIGHT_JUNIT_OUTPUT_FILE ?? 'test-results/junit.xml' }]
     ],
     use: {
         trace: 'retain-on-failure',
