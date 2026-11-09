@@ -164,6 +164,19 @@ Gotchas seen so far:
 | Merge button enabled with a red check | Ruleset not active, wrong target, or admin bypass | Check enforcement status, target branches and bypass list |
 | Artifact download fails | Expired, or not signed in | Re-run and download within the retention period |
 
+## 11. Publishing images to GHCR (optional, not enabled yet)
+
+Jenkins deploys staging from the locally built image. It pushes to `ghcr.io/davidlescard/ai-ci-reference-dashboard` only when `GHCR_TOKEN` is set in `jenkins/.env`; without it the push step logs "No GHCR token configured" and is skipped. To turn publishing on:
+
+1. **Create a classic token:** GitHub, **Settings, Developer settings, Personal access tokens, Tokens (classic)**, then **Generate new token (classic)**. Fine-grained tokens do not work for GHCR.
+2. Give it a name such as `jenkins-ghcr`, a short expiry, and only the **`write:packages`** scope (`read:packages` comes with it). Copy it immediately; GitHub shows it once.
+3. Add `GHCR_TOKEN=<token>` to `jenkins/.env`. The file is git-ignored; never paste the token in chat, a PR or a commit. Keep it separate from the read-only `GITHUB_TOKEN` that Jenkins uses to scan the repo.
+4. Restart Jenkins so it reads the new value: `docker compose -f jenkins/docker-compose.yml up -d`.
+5. Merge to `main` (or click **Build Now** on `main`). The log should show a `docker push` of `<build>-<sha>` and `latest`.
+6. Check **Packages** on the repo's GitHub page for the new image. Packages are private by default; change the visibility in the package settings if you need it public.
+
+Rotate the token before it expires, and delete it on GitHub if it leaks. The staging deploy does not depend on this token.
+
 ## Checklist
 
 - [ ] Empty repo created, default branch `main`

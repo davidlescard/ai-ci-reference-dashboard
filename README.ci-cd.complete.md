@@ -78,6 +78,24 @@ Settings that shape it:
 - **Polling.** Webhooks would need a Jenkins that GitHub can reach, so it checks GitHub every 5 minutes instead.
 - **Per-job concurrency.** A newer build of the same branch aborts an older one.
 
+### What to expect per branch
+
+Jenkins creates one job per branch under `quality-gate-lab`, and each job builds independently.
+
+| Branch | Stages that run | Stages skipped | Meaning of green |
+|---|---|---|---|
+| Feature or release branch (for example `release/ui-refresh-aidlc`) | Prepare through Playwright E2E | Publish image, Deploy to staging, Post-deploy smoke (`when { branch 'main' }`) | The code is healthy. Nothing is deployed. |
+| `main` (after a merge) | Every stage | None | Staging runs the merged commit and `@post-deploy` passed. |
+
+- The branch build is advisory and overlaps the GitHub checks. Only GitHub can block a merge.
+- A `main` build appears within 5 minutes of the merge (the polling interval). **Build Now** on the `main` job skips the wait.
+- Staging is identified by the image tag `<build>-<commit>`. Compare it with the merge commit.
+
+Messages that look alarming but are expected:
+- `Could not update commit status ... 403`: the read-only token cannot post statuses to GitHub.
+- `Stage "X" skipped due to earlier failure(s)`: an earlier stage (for example Prepare) failed, so later ones did not run. A first build right after Jenkins starts can fail this way; the next build normally passes.
+- `ERROR: No build record ... could not be located`: a Jenkins cosmetic message after a failed first build.
+
 ## After the merge: staging
 
 ```mermaid
