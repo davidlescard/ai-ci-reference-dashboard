@@ -1,0 +1,155 @@
+{
+  "stage": "functional-design",
+  "upstream_ids": [
+    "FR1.1",
+    "FR1.2",
+    "FR1.3",
+    "FR1.4",
+    "FR2.1",
+    "FR2.2",
+    "FR2.3",
+    "FR3.1",
+    "FR3.2",
+    "FR3.3",
+    "FR3.4",
+    "FR4.1",
+    "FR4.2",
+    "FR5.1",
+    "FR5.2",
+    "FR5.3",
+    "FR6.1",
+    "FR6.2",
+    "FR7.1",
+    "FR7.2",
+    "FR7.3"
+  ],
+  "coverage": [
+    {
+      "id": "FR1.1",
+      "status": "OK",
+      "target": "BR1.8"
+    },
+    {
+      "id": "FR1.2",
+      "status": "OK",
+      "target": "BR1.1, BR1.2, BR1.3"
+    },
+    {
+      "id": "FR1.3",
+      "status": "OK",
+      "target": "BR1.4"
+    },
+    {
+      "id": "FR1.4",
+      "status": "OK",
+      "target": "BR1.7"
+    },
+    {
+      "id": "FR2.1",
+      "status": "OK",
+      "target": "BR2.1"
+    },
+    {
+      "id": "FR2.2",
+      "status": "OK",
+      "target": "BR2.2, BR1.2"
+    },
+    {
+      "id": "FR2.3",
+      "status": "OK",
+      "target": "BR2.3"
+    },
+    {
+      "id": "FR3.1",
+      "status": "OK",
+      "target": "BR3.1"
+    },
+    {
+      "id": "FR3.2",
+      "status": "OK",
+      "target": "BR3.2"
+    },
+    {
+      "id": "FR3.3",
+      "status": "OK",
+      "target": "BR3.3"
+    },
+    {
+      "id": "FR3.4",
+      "status": "OK",
+      "target": "BR3.4, BR3.5"
+    },
+    {
+      "id": "FR4.1",
+      "status": "OK",
+      "target": "BR4.1"
+    },
+    {
+      "id": "FR4.2",
+      "status": "OK",
+      "target": "BR4.2"
+    },
+    {
+      "id": "FR5.1",
+      "status": "OK",
+      "target": "BR5.1"
+    },
+    {
+      "id": "FR5.2",
+      "status": "OK",
+      "target": "BR5.2"
+    },
+    {
+      "id": "FR5.3",
+      "status": "OK",
+      "target": "BR5.3"
+    },
+    {
+      "id": "FR6.1",
+      "status": "OK",
+      "target": "BR6.1"
+    },
+    {
+      "id": "FR6.2",
+      "status": "OK",
+      "target": "BR6.2"
+    },
+    {
+      "id": "FR7.1",
+      "status": "OK",
+      "target": "BR7.1, BR3.6"
+    },
+    {
+      "id": "FR7.2",
+      "status": "OK",
+      "target": "BR7.2"
+    },
+    {
+      "id": "FR7.3",
+      "status": "OK",
+      "target": "BR7.3"
+    }
+  ],
+  "reverse": [
+    {
+      "id": "BR1.5",
+      "status": "N/A",
+      "target": "traces to NFR3 (visible keyboard focus indicator)"
+    },
+    {
+      "id": "BR1.6",
+      "status": "N/A",
+      "target": "traces to NFR3 (WCAG AA contrast)"
+    },
+    {
+      "id": "BR8.1",
+      "status": "N/A",
+      "target": "traces to NFR1 (behavior parity)"
+    },
+    {
+      "id": "BR8.2",
+      "status": "N/A",
+      "target": "traces to NFR5 and NFR2 (build health, suite green)"
+    }
+  ]
+}
