@@ -2,7 +2,7 @@ import { type Locator, type Page } from '@playwright/test';
 import { Grid } from '@components/grid.comp';
 import { BasePage } from '@pages/base.page';
 
-export const RUN_COLUMNS = ['Name', 'Branch', 'Status', 'Duration (s)'] as const;
+export const RUN_COLUMNS = ['Name', 'Branch', 'Status', 'Duration'] as const;
 export type RunStatus = 'queued' | 'running' | 'passed' | 'failed';
 
 export class DashboardPage extends BasePage {

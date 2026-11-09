@@ -64,8 +64,8 @@ export const test = baseTest.extend<Fixtures, WorkerFixtures>({
     },
     resetData: [
         async ({ request, workerServer }, use) => {
-            // A deployed environment is never reset.
-            if (workerServer.external) {
+            // A deployed environment is never reset unless the run opts in (CI containers started with ENABLE_TEST_RESET).
+            if (workerServer.external && !process.env.ALLOW_TEST_RESET) {
                 await use();
                 return;
             }

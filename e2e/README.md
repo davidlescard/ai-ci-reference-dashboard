@@ -61,6 +61,7 @@ A deployed app has no `/api/test/reset` endpoint, so only run tests that do not 
 | Variable | Effect |
 |---|---|
 | `BASE_URL` | Target an already-running app instead of starting per-worker servers |
+| `ALLOW_TEST_RESET` | With `BASE_URL`, still reset data before each test. Only for a test container started with `ENABLE_TEST_RESET=true`; run with `--workers=1` because all tests share one database |
 | `CI` | Enables retries and `forbidOnly` |
 
 ## Layout

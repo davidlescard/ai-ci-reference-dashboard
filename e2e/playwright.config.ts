@@ -23,6 +23,11 @@ export default defineConfig({
         {
             name: 'api',
             testDir: './tests/api',
+        },
+        {
+            // Pure-module unit tests (apps/web formatting and design tokens): no browser, no app server.
+            name: 'unit',
+            testDir: './tests/unit',
         }
     ],
 })

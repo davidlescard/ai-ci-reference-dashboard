@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
+import Container from '@mui/material/Container';
+import Stack from '@mui/material/Stack';
+import { AppHeader } from './AppHeader';
 import { RunDetail } from './RunDetail';
 import { RunList } from './RunList';
+import { tokens } from './tokens';
 
 function parseHash(): { runId: number | null } {
   const match = /^#\/runs\/(\d+)$/.exec(window.location.hash);
@@ -17,13 +21,11 @@ export function App() {
   }, []);
 
   return (
-    <main>
-      <header>
-        <h1>
-          <a href="#/">Release Quality Dashboard</a>
-        </h1>
-      </header>
-      {route.runId === null ? <RunList /> : <RunDetail id={route.runId} />}
-    </main>
+    <>
+      <AppHeader />
+      <Container component="main" maxWidth={false} sx={{ maxWidth: tokens.contentMaxWidth, py: 3 }}>
+        <Stack spacing={3}>{route.runId === null ? <RunList /> : <RunDetail id={route.runId} />}</Stack>
+      </Container>
+    </>
   );
 }

@@ -53,16 +53,23 @@ jobs:
   docker-image:
     name: docker-image
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
 
       - name: Build image
         run: docker build -t quality-gate-lab:ci .
 
       - name: Start container and wait for the health check
         run: |
-          docker run -d --name qgl -p 3000:3000 quality-gate-lab:ci
+          docker run -d --name qgl -p 3000:3000 -e ENABLE_TEST_RESET=true quality-gate-lab:ci
           for attempt in $(seq 1 30); do
             if curl -fsS http://localhost:3000/health; then
               curl -fsS http://localhost:3000/api/runs | grep -q "Login Flow"
@@ -72,6 +79,30 @@ jobs:
           done
           echo "Container did not become healthy" >&2
           exit 1
+
+      - name: Install E2E dependencies
+        run: pnpm install --frozen-lockfile --filter ai-ci-reference-e2e
+
+      - name: Install Chromium
+        run: pnpm --filter ai-ci-reference-e2e exec playwright install --with-deps chromium
+
+      # One worker: every test shares the container's single database, reset before each test.
+      - name: Playwright smoke suite against the container
+        run: pnpm --filter ai-ci-reference-e2e exec playwright test --grep @smoke --workers=1
+        env:
+          CI: "true"
+          BASE_URL: http://localhost:3000
+          ALLOW_TEST_RESET: "1"
+
+      - name: Upload Playwright diagnostics
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-diagnostics-container
+          path: |
+            e2e/playwright-report/
+            e2e/test-results/
+          retention-days: 7
 
       - name: Container logs
         if: ${{ !cancelled() }}
