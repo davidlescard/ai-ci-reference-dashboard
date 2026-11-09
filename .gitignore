@@ -8,6 +8,7 @@ playwright-report/
 test-results-*/
 playwright-report-*/
 .env
+.vscode/
 
 # BEGIN AI-DLC:gitignore
 # AI-DLC: local working files
